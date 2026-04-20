@@ -26,7 +26,7 @@ cd /home/deepnegi/src/github.com/pensando/aicc-dev && \
   go test -c -v -o /tmp/restart-test.bin ./test/integ/aifm/restart/
 ```
 
-## Step 2: Run
+## Step 2: Run (single iteration)
 
 ```bash
 GOLANG_PROTOBUF_REGISTRATION_CONFLICT=ignore \
@@ -47,6 +47,54 @@ tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/unified_controller_
   /tmp/restart-test.bin -test.v -test.timeout 200m -ginkgo.v
 ```
 
+## Run multiple iterations (consistency/flakiness check)
+
+Use `/tmp/run_consistency_tests.sh` to run the test binary N times and collect per-iteration logs + a final pass/fail summary.
+
+**Script location**: `/tmp/run_consistency_tests.sh`
+
+**Usage**:
+```bash
+/tmp/run_consistency_tests.sh [ITERATIONS]
+```
+
+**Examples**:
+```bash
+/tmp/run_consistency_tests.sh        # 10 iterations (default)
+/tmp/run_consistency_tests.sh 5      # 5 iterations
+```
+
+**For overnight/background runs** (survives terminal disconnect):
+```bash
+nohup /tmp/run_consistency_tests.sh 10 &> /tmp/consistency_runner.log &
+# or inside tmux:
+tmux new-session -d -s consistency '/tmp/run_consistency_tests.sh 10'
+```
+
+**What it does**:
+1. Runs `/tmp/restart-test.bin` N times sequentially
+2. Saves per-iteration logs to `/tmp/restart_consistency_runs/<timestamp>/iteration_<N>/`
+3. Copies `/tmp/restart_test.log` and `/tmp/restart_test_logs/` per iteration
+4. Extracts and prints the Ginkgo summary for each iteration
+5. Prints a final summary: total iterations, passed, failed
+6. Exits non-zero if any iteration failed
+
+**Output structure**:
+```
+/tmp/restart_consistency_runs/<timestamp>/
+├── summary.txt                         # overall pass/fail summary
+├── iteration_1/
+│   ├── restart_test.log                # detailed test log
+│   └── restart_test_logs/              # per-test failure zips
+├── iteration_2/
+│   └── ...
+└── ...
+```
+
+**Prerequisites**: The test binary must already be built at `/tmp/restart-test.bin` (Step 1) and debug packages extracted (Step 0).
+
+**When to use**: When the user asks to run tests multiple times, check for flakiness, run consistency tests, run overnight, or says something like "run it 5 times".
+
 ## Notes
 
 - The build step compiles the test binary to `/tmp/restart-test.bin`.
@@ -60,4 +108,10 @@ tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/unified_controller_
 
 ```bash
 tmux send-keys -t <session> "tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/unified_controller_debug_package.tar -C /tmp && tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/unified_agent_debug_package.tar -C /tmp && cd /home/deepnegi/src/github.com/pensando/aicc-dev && GOFLAGS=-mod=vendor GOLANG_PROTOBUF_REGISTRATION_CONFLICT=ignore CGO_LDFLAGS_ALLOW=\"-I/usr/local/share/libtool\" go test -c -v -o /tmp/restart-test.bin ./test/integ/aifm/restart/ && GOLANG_PROTOBUF_REGISTRATION_CONFLICT=ignore /tmp/restart-test.bin -test.v -test.timeout 200m -ginkgo.v" Enter
+```
+
+For multi-iteration runs via tmux:
+
+```bash
+tmux send-keys -t <session> "/tmp/run_consistency_tests.sh <N>" Enter
 ```
