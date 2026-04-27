@@ -12,8 +12,8 @@ Three-step process: extract packages, build the test binary, then run it.
 Run from `/home/deepnegi/src/github.com/pensando/aicc-dev/bin`:
 
 ```bash
-tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/unified_controller_debug_package.tar -C /tmp && \
-  tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/unified_agent_debug_package.tar -C /tmp
+tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/afm_controller_debug_package.tar -C /tmp && \
+  tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/afm_agent_debug_package.tar -C /tmp
 ```
 
 ## Step 1: Build
@@ -36,8 +36,8 @@ GOLANG_PROTOBUF_REGISTRATION_CONFLICT=ignore \
 ## Combined (extract + build + run in one command)
 
 ```bash
-tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/unified_controller_debug_package.tar -C /tmp && \
-  tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/unified_agent_debug_package.tar -C /tmp && \
+tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/afm_controller_debug_package.tar -C /tmp && \
+  tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/afm_agent_debug_package.tar -C /tmp && \
   cd /home/deepnegi/src/github.com/pensando/aicc-dev && \
   GOFLAGS=-mod=vendor \
   GOLANG_PROTOBUF_REGISTRATION_CONFLICT=ignore \
@@ -107,7 +107,7 @@ tmux new-session -d -s consistency '/tmp/run_consistency_tests.sh 10'
 - Once the user specifies a target (e.g. `test`, `test:1`, `mysession:0.1`), send with:
 
 ```bash
-tmux send-keys -t <session> "tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/unified_controller_debug_package.tar -C /tmp && tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/unified_agent_debug_package.tar -C /tmp && cd /home/deepnegi/src/github.com/pensando/aicc-dev && GOFLAGS=-mod=vendor GOLANG_PROTOBUF_REGISTRATION_CONFLICT=ignore CGO_LDFLAGS_ALLOW=\"-I/usr/local/share/libtool\" go test -c -v -o /tmp/restart-test.bin ./test/integ/aifm/restart/ && GOLANG_PROTOBUF_REGISTRATION_CONFLICT=ignore /tmp/restart-test.bin -test.v -test.timeout 200m -ginkgo.v" Enter
+tmux send-keys -t <session> "tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/afm_controller_debug_package.tar -C /tmp && tar -xvf /home/deepnegi/src/github.com/pensando/aicc-dev/bin/afm_agent_debug_package.tar -C /tmp && cd /home/deepnegi/src/github.com/pensando/aicc-dev && GOFLAGS=-mod=vendor GOLANG_PROTOBUF_REGISTRATION_CONFLICT=ignore CGO_LDFLAGS_ALLOW=\"-I/usr/local/share/libtool\" go test -c -v -o /tmp/restart-test.bin ./test/integ/aifm/restart/ && GOLANG_PROTOBUF_REGISTRATION_CONFLICT=ignore /tmp/restart-test.bin -test.v -test.timeout 200m -ginkgo.v" Enter
 ```
 
 For multi-iteration runs via tmux:

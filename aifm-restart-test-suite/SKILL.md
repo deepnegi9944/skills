@@ -169,8 +169,8 @@ make build-debug-all
 This runs both `build-unified-controller-debug` and `build-unified-agent-debug` Makefile targets with the `aifm_debug` Go build tag and `AIFM_DEBUG=1`.
 
 Artifacts produced:
-- `bin/unified_controller_debug_package.tar`
-- `bin/unified_agent_debug_package.tar`
+- `bin/afm_controller_debug_package.tar`
+- `bin/afm_agent_debug_package.tar`
 
 Individual targets:
 ```bash
@@ -183,8 +183,8 @@ The build runs inside Docker and can take 10–20 minutes.
 ### Phase 2 — Extract to /tmp
 
 ```bash
-tar -xvf ./bin/unified_controller_debug_package.tar -C /tmp
-tar -xvf ./bin/unified_agent_debug_package.tar -C /tmp
+tar -xvf ./bin/afm_controller_debug_package.tar -C /tmp
+tar -xvf ./bin/afm_agent_debug_package.tar -C /tmp
 ```
 
 This creates `/tmp/controller_pkg/` and `/tmp/agent_pkg/` containing:
@@ -769,8 +769,8 @@ func verifyMyCondition() bool {
 | Build debug packages | `cd ~/src/github.com/pensando/aicc-dev && make build-debug-all` |
 | Build UC debug only | `make build-unified-controller-debug` |
 | Build UA debug only | `make build-unified-agent-debug` |
-| Extract UC debug | `tar -xvf ./bin/unified_controller_debug_package.tar -C /tmp` |
-| Extract UA debug | `tar -xvf ./bin/unified_agent_debug_package.tar -C /tmp` |
+| Extract UC debug | `tar -xvf ./bin/afm_controller_debug_package.tar -C /tmp` |
+| Extract UA debug | `tar -xvf ./bin/afm_agent_debug_package.tar -C /tmp` |
 | Run all tests | `export GOLANG_PROTOBUF_REGISTRATION_CONFLICT=ignore && cd test/integ/aifm/restart && ginkgo -v` |
 | Run via CI Makefile | `cd test/ci_targets/aifm && make restart-test` |
 | Run single test | `ginkgo -v --focus "test description substring"` |
